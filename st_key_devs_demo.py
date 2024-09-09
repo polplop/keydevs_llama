@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
-import requests
-import copy
 import io
-import time
+import toml
 
 scoutId2name = {
     'D0370AFB-8526-4AB6-8443-855A8C4FA66C': 'Business Contraction',
@@ -97,26 +95,7 @@ def plot_timeline(df):
 
 col2, col3 = st.columns([4, 1])
 
-
-uploaded_file = st.file_uploader("Upload past keydev results")
-if uploaded_file:
-    #read csv
-    df=pd.read_csv(uploaded_file)
-    st.session_state['results'] = df
-    clean_data = []
-    for i,row in df.iterrows():
-
-        clean_data.append(row)
-    output_df = pd.DataFrame(clean_data)
-    st.session_state['clean_results'] = output_df
-    uploaded_file = None
-    plot_timeline(output_df)
-
-
-else:
-    original_results_df = pd.DataFrame()
-    st.title("Company Key Developments")
-
-    st.markdown("""
-    Key Developments takes company mentioned articles and produced events sorted by ScoutAI
-    """)
+with open(".streamlit/secrets.toml", "r") as f:
+    loaded = toml.load(f, _dict=dict)
+output_df = pd.DataFrame(loaded)
+plot_timeline(output_df)
