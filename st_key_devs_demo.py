@@ -106,37 +106,17 @@ if uploaded_file:
     clean_data = []
     for i,row in df.iterrows():
 
-        # List of dictionary keys
-        # Add option to select visibility via ST
-
-        # del row['companyName'],
-        # del row['keyDevEventTypeName'],
-        # del row['headline'],
-        # del row['situation'],
-        # del row['annoucedDate'],
-        del row['Cluster size'],
-        del row['keydev_id'],
-        del row['cluster_first_date'],
-        del row['cluster_latest_date'],
-        del row['event_date_range'],
-        del row['Entity_detected'],
-        del row['article_member_data'],
-        del row['CIQID'],
-        del row['SA_ENTITY_GUID'],
-        # del row['cluster_importance']
         clean_data.append(row)
     output_df = pd.DataFrame(clean_data)
     st.session_state['clean_results'] = output_df
     uploaded_file = None
-
-    # if st.button("Display file results"):
-    #     st.rerun()
+    plot_timeline(output_df)
 
 
+else:
+    original_results_df = pd.DataFrame()
+    st.title("Company Key Developments")
 
-original_results_df = pd.DataFrame()
-st.title("Company Key Developments")
-
-st.markdown("""
-Key Developments takes company mentioned articles and produced events sorted by ScoutAI
-""")
+    st.markdown("""
+    Key Developments takes company mentioned articles and produced events sorted by ScoutAI
+    """)
