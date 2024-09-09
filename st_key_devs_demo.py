@@ -135,37 +135,8 @@ if uploaded_file:
 
 
 original_results_df = pd.DataFrame()
+st.title("Company Key Developments")
 
-
-
-if 'results' in st.session_state:
-original_results_df = st.session_state['results']
-output_df = st.session_state['clean_results']
-if not original_results_df.empty:
-    plot_timeline((original_results_df))
-    st.title("Full Results")
-    st.dataframe(output_df,
-                column_order=[
-                            'annoucedDate',
-                            'companyName',
-                            'keyDevEventTypeName',
-                            'headline',
-                            'situation',
-                            'article_guids',
-                                ]
-                )
-    csv = convert_to_csv(original_results_df)
-    # download button 1 to download dataframe as csv
-    download1 = st.download_button(
-        label="Download data as CSV",
-        data=csv,
-        file_name=f'{company_id}.csv',
-        mime='text/csv'
-    )
-
-else:
-    st.title("Company Key Developments")
-
-    st.markdown("""
-    Key Developments takes company mentioned articles and produced events sorted by ScoutAI
-    """)
+st.markdown("""
+Key Developments takes company mentioned articles and produced events sorted by ScoutAI
+""")
