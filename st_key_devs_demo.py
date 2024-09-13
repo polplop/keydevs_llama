@@ -108,7 +108,14 @@ with st.sidebar:
             df=pd.read_excel(uploaded_file, sheet_name=0)
             print(df)
 
-        if len(df):
+        for key in ["cluster_first_date", "companyName", "keyDevEventTypeName", "headline", "situation"]:
+            try:
+                assert key in df.columns
+            except AssertionError:
+                print(f"{key} was not found in the excel or csv, please make sure it exists/rename")
+                st.warning(f"{key} was not found in the excel or csv, please make sure it exists/rename")
+                break
+        else:
             # Input fields
             company_counts = {}
             for company in df['companyName']:
@@ -123,12 +130,6 @@ with st.sidebar:
 
             df = df[df['companyName'].isin([scout_ai_list_company_name])]
 
-            for key in ["cluster_first_date", "companyName", "keyDevEventTypeName", "headline", "situation"]:
-                try:
-                    assert key in df.columns
-                except AssertionError:
-                    print(f"{key} was not found in the excel or csv, please make sure it exists/rename")
-                    st.warning(f"{key} was not found in the excel or csv, please make sure it exists/rename")
 
             plot_timeline(df)
     else:
