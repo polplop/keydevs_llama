@@ -95,7 +95,44 @@ def plot_timeline(df):
 
 col2, col3 = st.columns([4, 1])
 
-with open(".streamlit/secrets.toml", "r") as f:
-    loaded = toml.load(f, _dict=dict)
-output_df = pd.DataFrame(loaded)
-plot_timeline(output_df)
+
+with st.sidebar:
+
+    uploaded_file = st.file_uploader("Upload past keydev results")
+    if uploaded_file:
+        #read csv
+        print(uploaded_file)
+        if '.csv' in uploaded_file.name:
+            df=pd.read_csv(uploaded_file)
+        else:
+            df=pd.read_excel(uploaded_file, sheet_name=0)
+            print(df)
+
+        if len(df):
+            # Input fields
+            company_counts = {}
+            for company in df['companyName']:
+                if company not in company_counts:
+                    company_counts[company] = 0
+                company_counts[company] += 1
+            sorted_companies = sorted(company_counts.items(), key=lambda item: item[1], reverse=True)
+            scout_ai_list_company_name = st.selectbox(
+                            'Companies',
+                            [c for c,_ in sorted_companies],
+                            )
+
+            df = df[df['companyName'].isin([scout_ai_list_company_name])]
+
+            for key in ["cluster_first_date", "companyName", "keyDevEventTypeName", "headline", "situation"]:
+                try:
+                    assert key in df.columns
+                except AssertionError:
+                    print(f"{key} was not found in the excel or csv, please make sure it exists/rename")
+                    st.warning(f"{key} was not found in the excel or csv, please make sure it exists/rename")
+
+            plot_timeline(df)
+    else:
+        with open(".streamlit/secrets.toml", "r") as f:
+            loaded = toml.load(f, _dict=dict)
+        output_df = pd.DataFrame(loaded)
+        plot_timeline(output_df)
